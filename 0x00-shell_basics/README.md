@@ -1,2 +1,2 @@
 #!/bin/bash
-this script prints the working directory
+echo "this script prints the working directory"
