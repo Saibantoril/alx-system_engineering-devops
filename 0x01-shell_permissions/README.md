@@ -1,2 +1,2 @@
 #!/bin/bash
-this script is used to give shell permissions
+this script gives description on how to give shell permissions
