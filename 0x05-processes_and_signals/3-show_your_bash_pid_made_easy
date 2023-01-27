@@ -3,4 +3,4 @@
 # along with the process name, of processes 
 # whose name contain the word bash
 
-pidof -f | grep bash
+pidof -l grep bash
