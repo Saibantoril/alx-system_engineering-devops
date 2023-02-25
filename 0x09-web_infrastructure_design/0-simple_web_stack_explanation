@@ -1,0 +1,36 @@
+Suppose a user wants to access www.foobar.com, they will enter the domain name into their web browser. The browser will first perform a DNS (Domain Name System) lookup to resolve the IP address of the web server where the website is hosted. This is done by querying the DNS servers responsible for the foobar.com domain.
+
+Server:
+A server is a computer system that provides services to other computers or devices on a network. In this case, the server will host the website files, application server, and database.
+
+Domain name:
+A domain name is a human-readable address used to identify a website on the internet. It is easier to remember and use than an IP address. The role of the domain name is to provide a memorable and unique name for the website, which can be used instead of the server's IP address.
+
+DNS record:
+The DNS record type for the www subdomain is an A record. This record associates the www subdomain with the server's IP address.
+
+Web server (Nginx):
+The web server's role is to receive incoming HTTP requests from the user's browser and respond with the appropriate web pages. In this infrastructure, Nginx will be used as the web server to handle incoming requests.
+
+Application server:
+The application server's role is to process business logic and serve dynamic content to the web server. In this infrastructure, we will use a Python application server such as Gunicorn.
+
+Application files:
+The application files are the code base for the website. They contain the web application logic, templates, and static files such as CSS, JavaScript, and images.
+
+Database (MySQL):
+The database's role is to store and manage the website's data, such as user accounts, product information, and so on. In this infrastructure, we will use MySQL as the database management system.
+
+Communication with the user's computer:
+The server will use the HTTP protocol to communicate with the user's computer. When a user requests a web page, their browser sends an HTTP request to the server. The server responds with an HTTP response containing the web page's HTML, CSS, JavaScript, and any other necessary files.
+
+Issues with this infrastructure:
+
+Single point of failure (SPOF):
+Since we are using a single server, it is a single point of failure. If the server goes down, the website will become unavailable, resulting in lost revenue and reputation.
+
+Downtime during maintenance:
+When deploying new code, the web server needs to be restarted, causing website downtime. This can result in lost revenue and customer dissatisfaction.
+
+Cannot scale if too much incoming traffic:
+If the website experiences a surge in traffic, the server may become overloaded and unable to handle the increased load. This can result in slow response times or website downtime.
