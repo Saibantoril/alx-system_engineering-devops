@@ -1,0 +1,13 @@
+Explanation:
+
+The proposed infrastructure consists of three servers. The first two servers are web/application servers, the third server is a database server, and there is also a load balancer to distribute traffic between the two web servers.
+
+We are using HAproxy as our load balancer because it is a reliable, open-source solution that supports a variety of distribution algorithms. The distribution algorithm we have configured it with is round-robin, which simply distributes traffic evenly across all available servers.
+
+The load-balancer is enabling an Active-Active setup, which means that both web servers are actively receiving traffic at all times. This is different from an Active-Passive setup, in which one server is active and the other is inactive (or "standby") until the active server fails.
+
+The database is set up as a Primary-Replica (Master-Slave) cluster, which means that there is one primary node (the "master") that accepts writes and multiple replica nodes (the "slaves") that replicate the data from the primary node. This provides redundancy and allows for failover in case the primary node goes down.
+
+The primary node is responsible for handling writes and updates to the database, while the replica nodes are responsible for reading data from the database. In regard to the application, the primary node is the "source of truth" for the most up-to-date data, while the replica nodes may have slightly older data due to replication lag.
+
+The SPOFs in this infrastructure include the load balancer and the database primary node. If either of these components fails, the entire site could be affected. Additionally, there are security issues with no firewall and no HTTPS, which could leave the site vulnerable to attacks. Finally, there is no monitoring in place, which means that issues may not be detected or addressed until they become serious problems.

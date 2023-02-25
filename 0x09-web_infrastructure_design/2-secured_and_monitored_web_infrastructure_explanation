@@ -1,0 +1,15 @@
+Explanation:
+
+The proposed infrastructure consists of three servers. The first server is a web/application server, the second server is a database server, and the third server is a web/application/monitoring server. There are also three firewalls to protect the servers.
+
+The website www.foobar.com will be served over HTTPS, using an SSL certificate to encrypt traffic. This is important for security purposes, as it helps protect sensitive information from being intercepted by third parties.
+
+Monitoring is used to keep track of the health and performance of the servers and the website. In this case, we are using monitoring clients to collect data from the servers and send it to a monitoring tool, such as SumoLogic. This allows us to identify and troubleshoot issues quickly, before they become serious problems.
+
+If we want to monitor the web server QPS (Queries Per Second), we can set up a monitoring tool to collect data on the number of requests received by the web server over a given period of time. This will give us an idea of the server's capacity and help us identify potential performance bottlenecks.
+
+One issue with terminating SSL at the load balancer level is that it can introduce a potential point of failure, as all the SSL processing is done at one location. If the load balancer goes down, the entire site will be inaccessible. It's better to terminate SSL at the server level, which allows for better control over security and scalability.
+
+Having only one MySQL server capable of accepting writes is a single point of failure. If that server goes down, the entire site will be affected. To avoid this, we could set up a MySQL cluster with multiple servers that can accept writes.
+
+Having servers with all the same components (database, web server, and application server) can be a problem because it doesn't allow for much flexibility in terms of scaling and redundancy. It's better to have specialized servers for each component, so that each one can be scaled and managed independently.
