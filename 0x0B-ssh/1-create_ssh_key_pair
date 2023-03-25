@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Generate a new RSA key pair
+ssh-keygen -t rsa -b 4096 -f school -N betty
+
+# Output success message
+echo "RSA key pair created successfully!"
