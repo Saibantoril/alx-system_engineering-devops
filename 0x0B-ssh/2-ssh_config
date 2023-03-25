@@ -1,0 +1,6 @@
+Host myserver
+  HostName example.com
+  User myusername
+  IdentityFile ~/.ssh/school
+  PreferredAuthentications publickey
+  PasswordAuthentication no
