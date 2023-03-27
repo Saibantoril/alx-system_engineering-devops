@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# This script starts the Apache service inside the container
+
+# Update the package list
+apt-get update
+
+# Install Apache
+apt-get install -y apache2
+
+# Start the Apache service
+service apache2 start
+
+# Create a HTML file with "Hello Holberton"
+echo "<h1>Hello Holberton</h1>" > /var/www/html/index.html
+
+# Keep the container running
+tail -f /dev/null
