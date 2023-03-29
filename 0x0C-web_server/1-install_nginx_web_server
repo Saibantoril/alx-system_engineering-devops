@@ -7,12 +7,6 @@ apt-get update
 apt-get install -y nginx
 
 # Configure Nginx
-echo "server {
-    listen 80;
-    location / {
-        echo 'Hello World!';
-    }
-}" > /etc/nginx/sites-available/default
-
+echo "Hello World!" > /var/www/html/index.html
 # Restart Nginx to apply changes
-systemctl restart nginx
+service nginx start
