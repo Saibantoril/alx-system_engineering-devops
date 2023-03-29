@@ -1,28 +1,7 @@
 #!/usr/bin/env bash
 # Install nginx on web server; Nginx should be listening on port 80
-set -e
-
-# Check if Nginx is already installed
-if [ -x "$(command -v nginx)" ]; then
-    echo "Nginx is already installed, skipping installation."
-else
-    # Install Nginx
-    sudo apt-get -y update
-    sudo apt-get -y install nginx
-fi
-
-# Check if Nginx is already running on port 80
-if sudo lsof -Pi :80 -sTCP:LISTEN -t >/dev/null; then
-    echo "Nginx is already running on port 80."
-else
-    # Configure Nginx to listen on port 80
-    sudo ufw allow "Nginx HTTP"
-    sudo sed -i 's/# server_names_hash_bucket_size/server_names_hash_bucket_size/g' /etc/nginx/nginx.conf
-    sudo service nginx restart
-fi
-
-# Create index file
-if [ -f /var/www/html/index.nginx-debian.html ]; then
-    echo "index.nginx-debian.html already exists, skipping creation of new file."
-else
-    echo "Hello World!" | sudo tee /var/www/html/index.nginx
+sudo apt-get update
+sudo apt-get install -y nginx
+sudo ufw allow 'Nginx HTTP'
+sudo echo "Hello World!" > /var/www/html/index.html
+sudo service nginx restart
