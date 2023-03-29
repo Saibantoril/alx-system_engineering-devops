@@ -7,7 +7,7 @@ apt-get update
 apt-get install -y nginx
 
 # Configure nginx to listen on port 80
-sed -i 's/listen\s*80;/listen 80 default_server;/g' /etc/nginx/sites-available/default
+sed -i 's/listen\s*80;/listen 80 default_server;/g' /etc/nginx/www.blog.saheed.com/default
 
 # Restart nginx
 kill $(cat /run/nginx.pid)
