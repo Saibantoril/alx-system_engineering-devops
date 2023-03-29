@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
-# Installs nginx server
-sudo apt-get update
-sudo apt-get -y install nginx
-sudo ufw allow 'Nginx HTTP'
-echo "Hello World!" > /var/www/html/index.html
-service nginx start
+
+# This script installs and configures Nginx on an Ubuntu machine to return "Hello World!" at the root URL.
+
+# Install Nginx
+apt-get update
+apt-get install -y nginx
+
+# Configure Nginx
+echo "server {
+    listen 80;
+    location / {
+        echo 'Hello World!';
+    }
+}" > /etc/nginx/sites-available/default
+
+# Restart Nginx to apply changes
+systemctl restart nginx
