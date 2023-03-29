@@ -2,8 +2,8 @@
 # This script installs and configures Nginx to listen on port 80 and return "Hello World!" at its root URL.
 
 # Update apt package index and install Nginx
-sudo apt update
-sudo apt install nginx -y
+sudo apt-get update
+sudo apt-get install -y nginx
 
 # Configure Nginx to listen on port 80 and return "Hello World!" at its root URL
 sudo echo "server {
@@ -15,3 +15,6 @@ sudo echo "server {
 
 # Restart Nginx without using systemctl
 sudo kill -s SIGHUP $(cat /run/nginx.pid)
+
+
+
