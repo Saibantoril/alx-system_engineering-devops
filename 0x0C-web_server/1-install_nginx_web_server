@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
-# This script installs and configures Nginx to listen on port 80 and return "Hello World!" at its root URL.
+# Script that configures a new Ubuntu machine to respect above requirements
 
-# Update apt package index and install Nginx
 sudo apt-get update
 sudo apt-get install -y nginx
 
-# Configure Nginx to listen on port 80 and return "Hello World!" at its root URL
-sudo echo "server {
-    listen 80;
-    location / {
-        echo 'Hello World!';
-    }
-}" > /etc/nginx/sites-available/default
+echo "Hello World!" | sudo tee /var/www/html/index.html
+string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.blog.ehoneahobed.com permanent;"
+sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-# Restart Nginx without using systemctl
-sudo kill -s SIGHUP $(cat /run/nginx.pid)
-
+sudo service nginx restart
 
 
