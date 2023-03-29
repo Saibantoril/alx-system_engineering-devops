@@ -1,31 +1,7 @@
 #!/usr/bin/env bash
-# This script installs nginx on the server, configures it to listen on port 80,
-# and ensures that it returns "Hello World!" when queried at its root with a GET request.
-
-# Install nginx
+# Installs nginx server
 apt-get update
-apt-get install -y nginx
-
-# Configure nginx to listen on port 80
-sed -i 's/listen\s*80;/listen 80 default_server;/g' /etc/nginx/www.blog.saheed.com/default
-
-# Restart nginx
-kill $(cat /run/nginx.pid)
-/usr/sbin/nginx -c /etc/nginx/nginx.conf &
-
-# Create a temporary file with the expected "Hello World!" response
-echo "Hello World!" > /tmp/hello_world.txt
-
-# Test nginx by querying it at its root with curl
-curl_output=$(curl -s http://localhost)
-if grep -q "Hello World!" /tmp/hello_world.txt <<< "$curl_output"; then
-  echo "Nginx is working correctly"
-else
-  echo "Error: Nginx is not returning the expected response"
-fi
-
-# Clean up temporary files
-rm /tmp/hello_world.txt
-
-
-
+apt-get -y install nginx
+ufw allow 'Nginx HTTP'
+echo "Hello World!" > /var/www/html/index.html
+service nginx start
