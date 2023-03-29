@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installs, configures, and starts the server
+# Install nginx on web server; Nginx should be listening on port 80
 set -e
 
 # Check if Nginx is already installed
