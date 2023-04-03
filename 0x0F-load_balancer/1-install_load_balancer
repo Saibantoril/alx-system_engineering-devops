@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-# This script installs and configures HAproxy on an Ubuntu machine to distribute traffic to two web servers using a roundrobin algorithm.
+#script installs and configures HAproxy on an Ubuntu machine to distribute traffic to two web servers using a roundrobin algorithm.
 
 set -euo pipefail
 
