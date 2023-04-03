@@ -13,8 +13,9 @@ frontend http-in
 
 backend servers
     balance roundrobin
-    server 108440-web-01 108440-web-01:80 check
-    server 108440-web-02 108440-web-02:80 check
+    server 108440-lb-01 54.237.124.224-web-01:80 check
+    server 108440-web-01 52.87.219.241-web-01:80 check
+    server 108440-web-02 54.242.162.151-web-01:80 check
 EOF'
 
 # Make sure that HAproxy can be managed via init script
@@ -26,8 +27,8 @@ sudo systemctl status haproxy
 
 # Ensure the correct hostnames are set
 sudo bash -c 'cat <<EOF >> /etc/hosts
-127.0.0.1 108440-web-01
-127.0.0.1 108440-web-02
+52.87.219.241 108440-web-01
+54.242.162.151 108440-web-02
 EOF'
 
 # Reload the hosts file
