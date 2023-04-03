@@ -1,38 +1,29 @@
 #!/usr/bin/env bash
-# This script installs and configures HAproxy on an Ubuntu machine 
-#distribute traffic to two web servers using a roundrobin algorithm.
+# Create a script to install and configure HAProxy on lb-01 server
+# Configure HAProxy to send traffic to web-01 and web-02 servers
+# Distribute requests using a roundrobin algorithm
+# Make sure that HAProxy can be managed via an init script
+# Install and configure HAproxy on my lb-01 server.
 
-set -euo pipefail
-sudo apt-get update
-sudo apt-get install -y haproxy
+sudo apt-get -y update
+apt-get -y install haproxy
 
-sudo bash -c 'cat <<EOF > /etc/haproxy/haproxy.cfg
-frontend http-in
-    bind *:80
-    default_backend servers
-
+# edit config file
+server_config=\
+"
+frontend  server-frontend
+        bind *:80
+        mode http
+        default_backend servers
 backend servers
-    balance roundrobin
-    server 108440-lb-01 54.237.124.224-web-01:80 check
-    server 108440-web-01 52.87.219.241-web-01:80 check
-    server 108440-web-02 54.242.162.151-web-01:80 check
-EOF'
+        balance roundrobin
+        server 63210-web-01 100.25.19.204:80 check
+        server 63210-web-02 54.157.159.85:80 check
+"
+echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
 
-# Make sure that HAproxy can be managed via init script
-sudo systemctl enable haproxy
-sudo systemctl restart haproxy
+# enable haproxy to be started by init script
 
-# Check the status of HAproxy
-sudo systemctl status haproxy
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
 
-# Ensure the correct hostnames are set
-sudo bash -c 'cat <<EOF >> /etc/hosts
-52.87.219.241 108440-web-01
-54.242.162.151 108440-web-02
-EOF'
-
-# Reload the hosts file
-sudo systemctl reload nscd
-
-# Check the hostnames
-sudo hostnamectl
+sudo service haproxy restart
