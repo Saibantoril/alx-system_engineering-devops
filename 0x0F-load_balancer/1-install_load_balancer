@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+#Update the package list and install HAproxy
+sudo apt-get update
+sudo apt-get install -y haproxy
+
+#Configure HAproxy to send traffic to web-01 and web-02 using roundrobin algorithm
+sudo bash -c 'cat <<EOF > /etc/haproxy/haproxy.cfg
+frontend http-in
+bind *:80
+default_backend servers
+
+backend servers
+balance roundrobin
+server web-01 STUDENT_ID-web-01:80 check
+server web-02 STUDENT_ID-web-02:80 check
+EOF'
+
+#Make sure that HAproxy can be managed via init script
+sudo systemctl enable haproxy
+sudo systemctl restart haproxy
+
+#Check the status of HAproxy
+sudo systemctl status haproxy
+
+#Ensure the correct hostnames are set
+sudo bash -c 'cat <<EOF >> /etc/hosts
+127.0.0.1 STUDENT_ID-web-01
+127.0.0.1 STUDENT_ID-web-02
+EOF'
+
+#Reload the hosts file
+sudo systemctl reload nscd
+
+#Check the hostnames
+hostnamectl
