@@ -31,9 +31,3 @@ sudo bash -c 'cat <<EOF >> /etc/hosts
 52.87.219.241 108440-web-01
 54.242.162.151 108440-web-02
 EOF'
-
-# Reload the hosts file
-sudo systemctl reload nscd
-
-# Check the hostnames
-sudo hostnamectl
