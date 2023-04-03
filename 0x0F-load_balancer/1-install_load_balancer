@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 #script installs and configures HAproxy on an Ubuntu machine to distribute traffic to two web servers using a roundrobin algorithm.
 
-set -euo pipefail
-
 # Update the package list and install HAproxy
 sudo apt-get update
 sudo apt-get install -y haproxy
@@ -17,7 +15,6 @@ backend servers
     balance roundrobin
     server 108440-web-01 52.87.219.241-web-01:80 check
     server 108440-web-02 54.242.162.151-web-02:80 check
-EOF'
 
 # Make sure that HAproxy can be managed via init script
 sudo systemctl enable haproxy
@@ -30,4 +27,3 @@ sudo systemctl status haproxy
 sudo bash -c 'cat <<EOF >> /etc/hosts
 52.87.219.241 108440-web-01
 54.242.162.151 108440-web-02
-EOF'
