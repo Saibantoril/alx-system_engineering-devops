@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Installs HAProxy version 1.8 with the following configurations:
+
+#Installs HAProxy version 1.8 with the following configurations:
 #+    Enables management via the init script.
 #+    Distributes requests using a round-robin algorithm.
 
@@ -13,8 +14,8 @@ frontend hbnb-lb_front
         default_backend hbnb-lb_back
 backend hbnb-lb_back
         balance roundrobin
-        server 1723-web-01 100.26.181.86:80 check
-        server 1723-web-02 34.238.192.13:80 check
+        server 108440-web-01 52.87.219.241:80 check
+        server 108440-web-02 54.242.162.151:80 check
 " >> /etc/haproxy/haproxy.cfg
 
 echo "ENABLED=1" >> /etc/default/haproxy
