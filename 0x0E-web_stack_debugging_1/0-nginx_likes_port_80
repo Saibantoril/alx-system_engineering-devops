@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Check if Nginx is running
+if ! systemctl is-active --quiet nginx; then
+  echo "Nginx is not running. Starting Nginx..."
+  sudo systemctl start nginx
+fi
+
+# Check if Nginx is listening on port 80
+if ! sudo netstat -tuln | grep -q LISTEN.*:80; then
+  echo "Nginx is not listening on port 80. Checking configuration file..."
+  if sudo nginx -t 2>&1 | grep -q "test is successful"; then
+    echo "Reloading Nginx configuration..."
+    sudo systemctl reload nginx
+  else
+    echo "Error in Nginx configuration. Please check the configuration file."
+  fi
+fi
