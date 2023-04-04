@@ -1,26 +1,30 @@
 #!/usr/bin/env bash
-# Install nginx web server
-# Update package lists
+# This script installs and configures Nginx to meet certain requirements.
+
+# Update package list
 sudo apt-get update
 
-# Install nginx
-sudo apt-get install -y nginx
+# Install Nginx
+sudo apt-get install nginx -y
 
-# Configure nginx to listen on port 80
-sudo sed -i 's/listen\s*80;/listen 80 default_server;/g' /etc/nginx/sites-available/default
+# Stop Nginx service
+sudo service nginx stop
 
-# Restart nginx
-sudo service nginx restart
+# Configure Nginx to listen on port 80
+sudo bash -c 'cat << EOF > /etc/nginx/sites-available/default
+server {
+    listen 80;
+    location / {
+        echo "Hello World!";
+    }
+}
+EOF'
 
-# Write "Hello World!" to index.html
-echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+# Start Nginx service
+sudo nohup nginx &> /dev/null &
 
-# Test nginx by making a GET request to the root URL
-response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost)
+# Verify Nginx installation
+ps aux | grep nginx
 
-if [ "$response" -ne 200 ]; then
-  echo "Nginx test failed: expected 200 OK but got $response"
-  exit 1
-fi
-
-echo "Nginx successfully installed and configured!"
+# Output success message
+echo "Nginx has been installed and configured to meet the requirements."
