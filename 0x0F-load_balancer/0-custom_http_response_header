@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# This script configures Nginx on an Ubuntu machine to add a custom HTTP header to its HTTP response
+
+set -euo pipefail
+
+# Update the package list and install Nginx
+sudo apt-get update
+sudo apt-get install -y nginx
+
+# Define a variable to store the hostname of the current server
+HOSTNAME=$(hostname)
+
+# Add a custom HTTP header to Nginx's HTTP response
+sudo sed -i '/^http {/a \        add_header X-Served-By $HOSTNAME;' /etc/nginx/nginx.conf
+
+# Restart Nginx to apply the changes
+sudo systemctl restart nginx
+
+# Exit the script with a success status
+exit 0
