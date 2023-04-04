@@ -1,38 +1,36 @@
 #!/usr/bin/env bash
-#configure a custom 404 page
+# This script configures Nginx to have a custom 404 page that contains the string "Ceci n'est pas une page".
 
+# Update package list
 sudo apt-get update
-sudo apt-get -y install nginx
-ufw allow 'Nginx HTTP'
-chmod -R 755 /var/www
-echo 'Hello World' > /var/www/html/index.html
 
-new_config=\
-"server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-               root /var/www/html;
-        index index.html index.htm index.nginx-debian.html;
-        server_name _;
-        location / {
-                try_files \$uri \$uri/ =404;
-        }
-        error_page 404 /404.html;
-        location  /404.html {
-            internal;
-        }
-        
-        if (\$request_filename ~ redirect_me){
-            rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
-        }
+# Install Nginx
+sudo apt-get install nginx -y
+
+# Stop Nginx service
+sudo service nginx stop
+
+# Configure custom 404 page
+sudo bash -c 'cat << EOF > /etc/nginx/sites-available/default
+server {
+    listen 80;
+    root /var/www/html;
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+        echo "Ceci n'est pas une page";
+    }
+    location / {
+        echo "Hello World!";
+    }
 }
-"
-echo "Ceci n'est pas une page" > /var/www/html/404.html
-echo "$new_config" > /etc/nginx/sites-available/default
+EOF'
 
-if [ "$(pgrep nginx)" -le 0 ];
-then
-    service nginx start
-else
-    service nginx restart
-fi;
+# Start Nginx service
+sudo nohup nginx &> /dev/null &
+
+# Verify Nginx installation
+ps aux | grep nginx
+
+# Output success message
+echo "Nginx has been configured to have a custom 404 page."
