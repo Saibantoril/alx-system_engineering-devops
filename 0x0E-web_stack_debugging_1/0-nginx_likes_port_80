@@ -1,18 +1,29 @@
 #!/usr/bin/env bash
+# This script configures Nginx to listen on port 80 of all the server's active IPv4 IPs
 
-# Check if Nginx is running
-if ! systemctl is-active --quiet nginx; then
-  echo "Nginx is not running. Starting Nginx..."
-  sudo systemctl start nginx
-fi
+# Install Nginx
+apt-get update
+apt-get install -y nginx
 
-# Check if Nginx is listening on port 80
-if ! sudo netstat -tuln | grep -q LISTEN.*:80; then
-  echo "Nginx is not listening on port 80. Checking configuration file..."
-  if sudo nginx -t 2>&1 | grep -q "test is successful"; then
-    echo "Reloading Nginx configuration..."
-    sudo systemctl reload nginx
-  else
-    echo "Error in Nginx configuration. Please check the configuration file."
-  fi
-fi
+# Backup default configuration
+mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+
+# Create new configuration
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name _;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF
+
+# Restart Nginx
+systemctl restart nginx
