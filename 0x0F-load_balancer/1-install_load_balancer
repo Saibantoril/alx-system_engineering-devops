@@ -1,46 +1,20 @@
 #!/usr/bin/env bash
-# This script installs and configures HAproxy on an Ubuntu machine to send traffic to two web servers using a roundrobin algorithm.
+# This script installs and configure HAproxy on your lb-01 server.
 
-# Install HAproxy
 apt-get update
 apt-get install -y haproxy
 
-# Configure HAproxy
-cat << EOF > /etc/haproxy/haproxy.cfg
-global
-    log /dev/log    local0
-    log /dev/log    local1 notice
-    chroot /var/lib/haproxy
-    stats socket /run/haproxy/admin.sock mode 660 level admin
-    stats timeout 30s
-    user haproxy
-    group haproxy
-    daemon
+printf %s "
+frontend 108440-lb-01_front
+        bind *:80
+        mode http
+        default_backend 108440-lb-01_back
+backend 108440-lb-01_back
+        balance roundrobin
+        server  52.87.219.241:80 check
+        server  54.242.162.151:80 check
+" >> /etc/haproxy/haproxy.cfg
 
-defaults
-    log     global
-    mode    http
-    option  httplog
-    option  dontlognull
-    timeout connect 5000
-    timeout client  50000
-    timeout server  50000
+echo "ENABLED=1" >> /etc/default/haproxy
 
-frontend http-in
-    bind *:80
-    default_backend servers
-
-backend servers
-    balance roundrobin
-    server 108440-web-01 52.87.219.241-web-01
-    server 108440-web-02 54.242.162.151-web-02
-EOF
-
-# Check HAproxy configuration
-haproxy -c -V -f /etc/haproxy/haproxy.cfg
-
-# Set init script to manage HAproxy
-sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
-
-# Restart HAproxy service
-service haproxy restart
+service haproxy start
