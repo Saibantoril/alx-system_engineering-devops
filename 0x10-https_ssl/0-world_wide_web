@@ -1,27 +1,17 @@
 #!/usr/bin/env bash
-# Display DNS information about subdomains
+# Display information about subdomains
 
-get_dns_info () {
-    local subdomain=$1
-    local domain=$2
-    local record_type=$(dig "$subdomain.$domain" +short | awk '{print toupper($1)}')
-    local destination=$(dig "$subdomain.$domain" +short)
-    printf "The subdomain %s is a %s record and points to %s\n" "$subdomain" "$record_type" "$destination"
+dns_config () {
+  echo "The subdomain $2 is a $(dig +short "$2.$1" | awk '{print $4}') record and points to $(dig +short "$2.$1" | awk '{print $1}')"
 }
 
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <domain> [<subdomain>]"
-    exit 1
-fi
-
-domain=$1
-
-if [ $# -eq 1 ]; then
-    subdomains=(www lb-01 web-01 web-02)
+if [[ $# -eq 1 ]]; then
+  for subdomain in www lb-01 web-01 web-02; do
+    dns_config "$1" "$subdomain"
+  done
+elif [[ $# -eq 2 ]]; then
+  dns_config "$1" "$2"
 else
-    subdomains=("$2")
+  echo "Usage: $0 domain [subdomain]"
+  exit 1
 fi
-
-for subdomain in "${subdomains[@]}"; do
-    get_dns_info "$subdomain" "$domain"
-done
