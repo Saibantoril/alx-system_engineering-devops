@@ -1,36 +1,46 @@
 #!/usr/bin/env bash
-# This script installs and configures HAproxy on an Ubuntu machine to distribute traffic to two web servers using a roundrobin algorithm.
+# This script installs and configures HAproxy on an Ubuntu machine to send traffic to two web servers using a roundrobin algorithm.
 
-set -euo pipefail
+# Install HAproxy
+apt-get update
+apt-get install -y haproxy
 
-# Update the package list and install HAproxy
-sudo apt-get update
-sudo apt-get install -y haproxy
+# Configure HAproxy
+cat << EOF > /etc/haproxy/haproxy.cfg
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
 
-# Configure HAproxy to send traffic to 108440-web-01 and 108440-web-02 using roundrobin algorithm
-sudo bash -c 'cat <<EOF > /etc/haproxy/haproxy.cfg
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+
 frontend http-in
-  bind *:80
-  default_backend servers
+    bind *:80
+    default_backend servers
 
 backend servers
-  balance roundrobin
-  server 108440-web-01 52.87.219.241-web-01:80 check
-  server 108440-web-02 54.242.162.151-web-02:80 check
-EOF'
+    balance roundrobin
+    server server1 52.87.219.241-web-01
+    server server2 54.242.162.151-web-02
+EOF
 
-# Make sure that HAproxy can be managed via init script
-sudo systemctl enable haproxy
-sudo systemctl restart haproxy
+# Check HAproxy configuration
+haproxy -c -V -f /etc/haproxy/haproxy.cfg
 
-# Ensure the correct hostnames are set
-sudo bash -c 'cat <<EOF >> /etc/hosts
-52.87.219.241 108440-web-01
-54.242.162.151 108440-web-02
-EOF'
+# Set init script to manage HAproxy
+sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 
-# Reload the hosts file
-sudo systemctl reload nscd
-
-# Check the hostnames
-hostnamectl
+# Restart HAproxy service
+service haproxy restart
