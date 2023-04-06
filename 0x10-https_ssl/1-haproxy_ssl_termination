@@ -33,18 +33,18 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-frontend  server-frontend-http
+frontend  saheed-frontend-http
         bind *:80
         mode http
 	http-request set-header X-Forwarded-Proto http
-        default_backend server-backend
+        default_backend saheed-backend
 
-frontend server-frontend-https
-	bind *:443 ssl crt /etc/haproxy/certs/www.ehoneah.tech.pem
+frontend saheed-frontend-https
+	bind *:443 ssl crt /etc/haproxy/certs/www.saheed.tech.pem
 	http-request set-header X-Forwarded-Proto https
-	default_backend server-backend
+	default_backend saheed-backend
 
-backend server-backend
+backend saheed-backend
         balance roundrobin
         server 108440-web-01 52.87.219.241:80 check
         server 108440-web-02 54.242.162.151:80 check
