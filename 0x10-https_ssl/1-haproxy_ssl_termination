@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Configure HAproxy to terminate SSL
+
+# Install Certbot and obtain SSL certificate
+sudo apt-get update
+sudo apt-get install certbot
+sudo certbot certonly --standalone --agree-tos --non-interactive -d www.example.com
+
+# Configure HAproxy
+sudo sed -i '/bind \*:80/a bind \*:443 ssl crt /etc/letsencrypt/live/www.example.com/fullchain.pem' /etc/haproxy/haproxy.cfg
+sudo sed -i '/mode http/a mode tcp' /etc/haproxy/haproxy.cfg
+sudo sed -i '/http-request redirect/a http-request set-header X-Client-SSL %[ssl_fc]' /etc/haproxy/haproxy.cfg
+sudo service haproxy restart
+
+# Verify SSL termination
+curl -s -I https://www.example.com | grep "200 OK"
+curl -s https://www.example.com | grep "Holberton School"
