@@ -5,7 +5,7 @@ apt-get update
 apt-get install -y haproxy
 
 printf %s "
-frontend 108440-lb-01_back
+frontend 108440-lb-01_front
         bind *:80
         mode http
         default_backend 108440-lb-01_back
