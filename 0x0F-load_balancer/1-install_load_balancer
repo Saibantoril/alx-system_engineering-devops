@@ -5,11 +5,11 @@ apt-get update
 apt-get install -y haproxy
 
 printf %s "
-frontend 108440-lb-01
+frontend 108440-lb-01_back
         bind *:80
         mode http
-        default_backend 108440-lb-01
-backend 108440-lb-01
+        default_backend 108440-lb-01_back
+backend 108440-lb-01_back
         balance roundrobin
         server  52.87.219.241:80 check
         server  54.242.162.151:80 check
