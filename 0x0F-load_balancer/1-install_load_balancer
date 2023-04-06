@@ -32,8 +32,8 @@ frontend http-in
 
 backend servers
     balance roundrobin
-    server 108440-web-01 52.87.219.241-web-01
-    server 108440-web-02 54.242.162.151-web-02
+    server 108440-web-01 52.87.219.241:80-web-01
+    server 108440-web-02 54.242.162.151:80-web-02
 EOF
 
 # Check HAproxy configuration
