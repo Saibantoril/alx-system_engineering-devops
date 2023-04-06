@@ -1,31 +1,27 @@
 #!/usr/bin/env bash
-# This script displays information about subdomains of a given domain
+# Display DNS information about subdomains
 
-get_record_type() {
-  dig +short -t "$1" "$2" | awk '{ if (NR==1) { print $1 } }'
+get_dns_info () {
+    local subdomain=$1
+    local domain=$2
+    local record_type=$(dig "$subdomain.$domain" +short | awk '{print toupper($1)}')
+    local destination=$(dig "$subdomain.$domain" +short)
+    printf "The subdomain %s is a %s record and points to %s\n" "$subdomain" "$record_type" "$destination"
 }
 
-get_destination() {
-  dig +short "$1" "$2" | awk '{ if (NR==1) { print $1 } }'
-}
-
-if [[ -z $1 ]]; then
-  echo "Error: domain argument is mandatory"
-  exit 1
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <domain> [<subdomain>]"
+    exit 1
 fi
 
-if [[ -n $2 ]]; then
-  subdomains=("$2")
+domain=$1
+
+if [ $# -eq 1 ]; then
+    subdomains=(www lb-01 web-01 web-02)
 else
-  subdomains=("www" "lb-01" "web-01" "web-02")
+    subdomains=("$2")
 fi
 
 for subdomain in "${subdomains[@]}"; do
-  record_type=$(get_record_type "$subdomain" "$1")
-  if [[ -z $record_type ]]; then
-    echo "Subdomain $subdomain does not exist for domain $1"
-    continue
-  fi
-  destination=$(get_destination "$subdomain" "$1")
-  echo "The subdomain $subdomain is a $record_type record and points to $destination"
+    get_dns_info "$subdomain" "$domain"
 done
