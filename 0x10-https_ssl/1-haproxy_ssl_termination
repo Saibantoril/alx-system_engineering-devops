@@ -1,39 +1,17 @@
-global
-    ssl-default-bind-options no-sslv3 no-tlsv10
-    ssl-default-bind-ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
-    tune.ssl.default-dh-param 2048
-
-defaults
-    mode http
-    log global
-    option httplog
-    option dontlognull
-    option forwardfor
-    option http-server-close
-
-frontend https
-    bind *:443 ssl crt /path/to/your/certificate.pem
-    mode http
-    option forwardfor
-    reqadd X-Forwarded-Proto:\ https
-    default_backend web-backend
-
-backend web-backend
-    mode http
-    option forwardfor
-    http-request add-header X-Forwarded-Proto https
-    server web-server 127.0.0.1:80
-
-listen stats
-    bind *:8080
-    mode http
-    stats enable
-    stats uri /haproxy_stats
-    stats realm Haproxy\ Statistics
-    stats auth admin:password
-
+sudo apt-get update
+sudo apt-get install certbot haproxy
+sudo certbot certonly --standalone -d www.example.com
+# Redirect HTTP traffic to HTTPS
 frontend http
     bind *:80
     mode http
+    redirect scheme https code 301 if !{ ssl_fc }
+
+# Configure SSL certificate
+frontend https
+    bind *:443 ssl crt /etc/letsencrypt/live/www.example.com/fullchain.pem
+    mode http
+    option http-server-close
     option forwardfor
-    redirect scheme https if !{ ssl_fc }
+    reqadd X-Forwarded-Proto:\ https
+sudo service haproxy restart
