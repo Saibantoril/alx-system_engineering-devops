@@ -1,6 +1,6 @@
 sudo apt-get update
 sudo apt-get install certbot haproxy
-sudo certbot certonly --standalone -d www.example.com
+sudo certbot certonly --standalone -d www.saheed.tech.com
 # Redirect HTTP traffic to HTTPS
 frontend http
     bind *:80
@@ -9,7 +9,7 @@ frontend http
 
 # Configure SSL certificate
 frontend https
-    bind *:443 ssl crt /etc/letsencrypt/live/www.example.com/fullchain.pem
+    bind *:443 ssl crt /etc/letsencrypt/live/www.saheed.tech.com/fullchain.pem
     mode http
     option http-server-close
     option forwardfor
