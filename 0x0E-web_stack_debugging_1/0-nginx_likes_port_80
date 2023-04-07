@@ -1,8 +1,29 @@
 #!/usr/bin/env bash
-# fix Ubuntu container's to listen on port 80
+# This script configures Nginx to listen on port 80 of all the server's active IPv4 IPs
 
-new="80 default_server"
-old="8080 default_server"
-sed -i "s/$old/$new/" /etc/nginx/sites-enabled/default
+# Install Nginx
+apt-get update
+apt-get install -y nginx
 
-service nginx restart
+# Backup default configuration
+mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+
+# Create new configuration
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name _;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF
+
+# Restart Nginx
+systemctl restart nginx
