@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # This script installs and configures Nginx to meet certain requirements.
-
 apt-get update
 apt-get -y install nginx
 ufw allow 'Nginx HTTP'
