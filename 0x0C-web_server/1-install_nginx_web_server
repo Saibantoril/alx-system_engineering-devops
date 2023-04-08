@@ -11,7 +11,7 @@ sudo apt-get install nginx -y
 sudo sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
 
 # Create a default web page that says "Hello World!"
-echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+echo "Hello World!" > /var/www/html/index.html
 
 # Restart Nginx
 sudo /etc/init.d/nginx restart
