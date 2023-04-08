@@ -1,36 +1,18 @@
 #!/usr/bin/env bash
-# This script configures Nginx to have a custom 404 page that contains the string "Ceci n'est pas une page".
+#Configure your Nginx server to have a custom 404 page that contains the string
 
-# Update package list
 sudo apt-get update
+sudo apt-get install -y nginx
 
-# Install Nginx
-sudo apt-get install nginx -y
+# code to redirect a specific endpoint (eg: redirect /redirect_me to https://blog.saheed.com)
+echo "Hello World!" | sudo tee /var/www/html/index.html
+string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.blog.saheed.com permanent;"
+sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-# Stop Nginx service
-sudo service nginx stop
+# code to create error page and add a redirect for error 404
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+string_for_replacement="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
+sudo sed -i "s/listen 80 default_server;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-# Configure custom 404 page
-sudo bash -c 'cat << EOF > /etc/nginx/sites-available/default
-server {
-    listen 80;
-    root /var/www/html;
-    error_page 404 /404.html;
-    location = /404.html {
-        internal;
-        echo "Ceci n'est pas une page";
-    }
-    location / {
-        echo "Hello World!";
-    }
-}
-EOF'
-
-# Start Nginx service
-sudo nohup nginx &> /dev/null &
-
-# Verify Nginx installation
-ps aux | grep nginx
-
-# Output success message
-echo "Nginx has been configured to have a custom 404 page."
+# restart the server
+sudo service nginx restart
