@@ -11,8 +11,8 @@ frontend 108440-lb-01_front
         default_backend 108440-lb-01_back
 backend 108440-lb-01_back
         balance roundrobin
-        server  52.87.219.241:80 check
-        server  54.242.162.151:80 check
+        server web-01 52.87.219.241:80 check
+        server web-02 54.242.162.151:80 check
 " >> /etc/haproxy/haproxy.cfg
 
 echo "ENABLED=1" >> /etc/default/haproxy
