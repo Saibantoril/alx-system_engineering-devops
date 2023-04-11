@@ -11,7 +11,7 @@ sudo apt-get install nginx -y
 ufw allow 'Nginx HTTP'
 
 # Create a default web page that says "Hello World!"
-echo "Hello World!" > /var/www/html/index.html
+echo "Hello World!" > /var/www/saheed.get/html/index.html
 
 # Restart Nginx
 sudo /etc/init.d/nginx restart
