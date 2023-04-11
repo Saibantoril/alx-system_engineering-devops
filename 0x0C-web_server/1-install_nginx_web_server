@@ -13,4 +13,4 @@ ufw allow 'Nginx HTTP'
 # Create a default web page that says "Hello World!"
 sudo bash -c 'echo "Hello World!" > /var/www/html/index.html'
 # Restart Nginx
-sudo /etc/init.d/nginx restart
+sudo service nginx restart
