@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Installs, configures, and starts the server
+sudo apt-get update
+sudo apt-get install nginx -y
+
+# Create a new Nginx configuration file for the redirect
+cat << EOF | sudo tee /etc/nginx/sites-available/redirect
+server {
+    listen 80;
+    server_name example.com;
+
+    location /redirect_me {
+        return 301 https://example.com/new_page;
+    }
+}
+EOF
+
+# Enable the new configuration file
+sudo ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
+
+# Test the Nginx configuration
+sudo nginx -t
+
+# Restart Nginx to apply changes
+sudo systemctl restart nginx
