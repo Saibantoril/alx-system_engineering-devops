@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# A script that runs nginx as nginx user
+#listening to all active ip on port 8080
+
+# Install Nginx
+apt-get update
+apt-get install -y nginx
+
+# Change the user that Nginx runs as to nginx
+sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf
+
+# Change the permissions of the Nginx cache directory to the nginx user
+chown -R nginx:nginx /var/cache/nginx
+
+# Configure Nginx to listen on all active IPs on port 8080
+echo "server {
+  listen 8080 default_server;
+  listen [::]:8080 default_server;
+
+  root /var/www/html;
+  index index.html;
+
+  location / {
+    try_files \$uri \$uri/ =404;
+  }
+}" > /etc/nginx/sites-available/default
+
+# Restart Nginx
+systemctl restart nginx
