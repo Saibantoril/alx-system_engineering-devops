@@ -14,10 +14,10 @@ ARCHIVE_NAME="$DATE.tar.gz"
 MYSQL_ROOT_PASSWORD="$1"
 
 # Generate the MySQL dump and save it to file
-mysqldump -u root -p$MYSQL_ROOT_PASSWORD --all-databases > $MYSQL_DUMP_FILE
+mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" --all-databases > $MYSQL_DUMP_FILE
 
 # Compress the MySQL dump to a tar.gz archive
-tar -czvf $ARCHIVE_NAME $MYSQL_DUMP_FILE
+tar -czvf "$ARCHIVE_NAME" $MYSQL_DUMP_FILE
 
 # Remove the MySQL dump file
 rm $MYSQL_DUMP_FILE
