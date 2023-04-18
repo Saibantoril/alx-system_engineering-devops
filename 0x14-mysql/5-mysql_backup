@@ -1,27 +1,5 @@
 #!/usr/bin/env bash
-#A bash script that generates  a MYSQL dump and creates a compressed archive out of it.
+# This script generates a MySQL dump and creates a compressed archive  of it
 
-# Set the date format
-DATE=$(date +%d-%m-%Y)
-
-# Set the name of the MySQL dump file
-MYSQL_DUMP_FILE="backup.sql"
-
-# Set the name of the compressed archive
-ARCHIVE_NAME="$DATE.tar.gz"
-
-# Set the MySQL root password
-MYSQL_ROOT_PASSWORD="$1"
-
-# Generate the MySQL dump and save it to file
-mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" --all-databases > $MYSQL_DUMP_FILE
-
-# Compress the MySQL dump to a tar.gz archive
-tar -czvf "$ARCHIVE_NAME" $MYSQL_DUMP_FILE
-
-# Remove the MySQL dump file
-rm $MYSQL_DUMP_FILE
-
-# Move the compressed archive to a different data center
-# Replace with your own command(s) to transfer the archive
-echo "Backup created and transferred to a different data center: $ARCHIVE_NAME"
+mysqldump -uroot -p"$1" --all-databases > backup.sql
+tar -czf $(date +%d-%m-%Y).tar.gz backup.sql
