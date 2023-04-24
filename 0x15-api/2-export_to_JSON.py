@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-"""Accessing a REST API for todo lists of employees and exporting data in JSON format"""
+"""Accessing a REST API for todo lists of employees"""
 
 import json
 import requests
 import sys
+
 
 if __name__ == '__main__':
     employeeId = sys.argv[1]
@@ -11,26 +12,18 @@ if __name__ == '__main__':
     url = baseUrl + "/" + employeeId
 
     response = requests.get(url)
-    employeeName = response.json().get('name')
+    username = response.json().get('username')
 
     todoUrl = url + "/todos"
     response = requests.get(todoUrl)
     tasks = response.json()
 
-    # Export tasks to JSON
-    tasks_json = {}
-    tasks_json[employeeId] = []
-
+    dictionary = {employeeId: []}
     for task in tasks:
-        tasks_json[employeeId].append({
-            'task': task.get('title'),
-            'completed': task.get('completed'),
-            'username': employeeName
+        dictionary[employeeId].append({
+            "task": task.get('title'),
+            "completed": task.get('completed'),
+            "username": username
         })
-    with open(f"{employeeId}.json", 'w') as json_file:
-        json.dump(tasks_json, json_file)
-
-    done_tasks = [task for task in tasks if task['completed']]
-    print(f"Employee {employeeName} is done with tasks ({len(done_tasks)}/{len(tasks)}):")
-    for task in done_tasks:
-        print(f"\t{task['title']}")
+    with open('{}.json'.format(employeeId), 'w') as filename:
+        json.dump(dictionary, filename)
