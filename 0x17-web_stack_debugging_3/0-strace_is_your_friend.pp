@@ -1,3 +1,5 @@
+# A puppet that debugs and corrects why Apache returns 500 error
+
 file { '/etc/httpd/conf/httpd.conf':
   ensure => present,
   owner  => 'root',
