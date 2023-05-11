@@ -1,11 +1,10 @@
-# A puppet that debugs and corrects why Apache returns 500 error
+# A puppet manuscript to replace a line in a file on a server
 
-file { '/etc/httpd/conf/httpd.conf':
-  ensure => present,
-  owner  => 'root',
-  group  => 'root',
-  mode   => '0644',
-  content => template('my_module/httpd.conf.erb'),
-  require => Package['httpd'],
-  notify  => Service['httpd'],
+$file_to_edit = '/var/www/html/wp-settings.php'
+
+#replace line containing "phpp" with "php"
+
+exec { 'replace_line':
+  command => "sed -i 's/phpp/php/g' ${file_to_edit}",
+  path    => ['/bin','/usr/bin']
 }
