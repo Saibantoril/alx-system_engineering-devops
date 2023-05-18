@@ -1,12 +1,13 @@
-#Increase the amount of traffic an Nginx server can handle
+# This manuscript increases the amount of traffic an Nginx server can handle
 
-file { '/etc/default/nginx':
-  ensure  => file,
-  content => template('your_module/nginx_default.erb'),
-  notify  => Exec['nginx-restart'],
+# Increase the ULIMIT of the default file
+exec { 'fix--for-nginx':
+  command => 'sed -i "s/15/4096/" /etc/default/nginx',
+  path    => '/usr/local/bin/:/bin/'
 }
-#restarts Nginx
-exec { 'nginx-restart':
-  command     => 'service nginx restart',
-  refreshonly => true,
+
+# Restart Nginx
+-> exec { 'nginx-restart':
+  command => 'nginx restart',
+  path    => '/etc/init.d/'
 }
