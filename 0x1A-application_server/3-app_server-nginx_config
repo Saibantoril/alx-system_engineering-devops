@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Configure Nginx to proxy requests to Gunicorn
+
+set -euo pipefail
+
+config_file="/etc/nginx/sites-available/3-app_server-nginx_config"
+sites_enabled_dir="/etc/nginx/sites-enabled/"
+default_config="/etc/nginx/sites-enabled/default"
+
+# Create Nginx configuration file
+echo "server {
+    listen 80;
+    server_name _;
+
+    location /airbnb-dynamic/number_odd_or_even/ {
+        proxy_pass http://localhost:5001;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+}" | sudo tee "$config_file" > /dev/null
+
+# Create symbolic link to enable the site
+sudo ln -sf "$config_file" "$sites_enabled_dir"
+
+# Remove default Nginx configuration file
+sudo rm -f "$default_config"
+
+# Restart Nginx
+sudo service nginx restart
