@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# This script configures Nginx to route requests to a Gunicorn instance for AirBnB_clone_v3.
+
+# Define the Nginx configuration file path
+NGINX_CONFIG_FILE="/etc/nginx/sites-available/default"
+
+# Create a backup of the original Nginx configuration file
+cp "$NGINX_CONFIG_FILE" "${NGINX_CONFIG_FILE}.bak"
+
+# Define the new Nginx configuration
+NGINX_CONFIG="
+server {
+    listen 80;
+    server_name _;
+
+    location /api/ {
+        proxy_pass http://localhost:5002/;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+}
+"
+
+# Write the new Nginx configuration to the file
+echo "$NGINX_CONFIG" > "$NGINX_CONFIG_FILE"
+
+# Check the syntax of the Nginx configuration
+nginx -t
+
+# Restart Nginx to apply the configuration changes
+systemctl restart nginx
+
+# Ensure the Nginx service is enabled to start on boot
+systemctl enable nginx
+
+# Verify the Nginx status
+systemctl status nginx
+
+# Cleanup
+rm "${NGINX_CONFIG_FILE}.bak"
+
+# Exit the script
+exit 0
