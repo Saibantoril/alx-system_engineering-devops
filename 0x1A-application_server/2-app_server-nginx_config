@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# This script configures Nginx to serve a Flask application from the route /airbnb-onepage/
+
+set -euo pipefail
+
+# Update Nginx configuration file
+config_file="/etc/nginx/sites-available/default"
+
+{
+    echo "server {
+    listen 80;
+    server_name _;
+
+    location /airbnb-onepage/ {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+}"
+} | sudo tee "$config_file" > /dev/null
+
+# Restart Nginx
+sudo service nginx restart
